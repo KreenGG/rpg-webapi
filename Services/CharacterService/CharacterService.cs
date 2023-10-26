@@ -31,7 +31,7 @@ namespace rpg.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();;
+            serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList(); ;
             return serviceResponse;
         }
 
@@ -40,6 +40,35 @@ namespace rpg.Services.CharacterService
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
             var character = characters.FirstOrDefault(c => c.Id == id);
             serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
+        {
+            var serviceResponse = new ServiceResponse<GetCharacterDto>();
+
+            try
+            {
+                var character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
+                if (character is null)
+                    throw new Exception($"Character with id '{updatedCharacter.Id}' not found.");
+
+                character.Name = updatedCharacter.Name;
+                character.HitPoints = updatedCharacter.HitPoints;
+                character.Strength = updatedCharacter.Strength;
+                character.Dexterity = updatedCharacter.Dexterity;
+                character.Intelligence = updatedCharacter.Intelligence;
+                character.Defence = updatedCharacter.Defence;
+                character.Class = updatedCharacter.Class;
+
+                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+
             return serviceResponse;
         }
     }
