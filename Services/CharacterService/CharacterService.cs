@@ -88,14 +88,9 @@ namespace rpg.Services.CharacterService
                     await _context.Characters.FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id);
                 if (dbCharacter is null)
                     throw new Exception($"Character with id '{updatedCharacter.Id}' not found.");
+                
+                dbCharacter = _mapper.Map(updatedCharacter,dbCharacter);
 
-                dbCharacter.Name = updatedCharacter.Name;
-                dbCharacter.HitPoints = updatedCharacter.HitPoints;
-                dbCharacter.Strength = updatedCharacter.Strength;
-                dbCharacter.Dexterity = updatedCharacter.Dexterity;
-                dbCharacter.Intelligence = updatedCharacter.Intelligence;
-                dbCharacter.Defence = updatedCharacter.Defence;
-                dbCharacter.Class = updatedCharacter.Class;
 
                 await _context.SaveChangesAsync();
                 serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
